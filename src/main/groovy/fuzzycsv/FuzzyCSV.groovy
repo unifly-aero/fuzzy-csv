@@ -7,7 +7,6 @@ import groovy.sql.Sql
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import secondstring.PhraseHelper
 
 import java.sql.ResultSet
 import java.sql.ResultSetMetaData
@@ -640,30 +639,11 @@ public class FuzzyCSV {
     static List mergeHeaders(List<?> h1, List<?> h2) {
 
 
-        def phraseHelper = PhraseHelper.train(h1)
         def newHeaders = []
 
 
         newHeaders.addAll(h1)
 
-
-        log.debug '========'
-        h2.each { String header ->
-            def hit = phraseHelper.bestInternalHit(header, ACCURACY_THRESHOLD.get())
-            def bestScore = phraseHelper.bestInternalScore(header)
-            def bestWord = phraseHelper.bestInternalHit(header, 0)
-            if (hit != null) {
-                log.debug "mergeHeaders(): [matchfound] :$bestScore% compare('$header', '$hit')"
-            } else {
-                newHeaders.add(header)
-                log.debug "mergeHeaders(): [no-match] :$bestScore% compare('$header',BestMatch['$bestWord'])"
-
-            }
-        }
-
-        log.debug "=======\n" +
-                "mergeHeaders(): HEADER1 \t= $h1 \n HEADER2 \t= $h2 \nNEW_HEADER \t= $newHeaders\n" +
-                "======="
         return newHeaders
     }
 
